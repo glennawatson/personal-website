@@ -8,11 +8,11 @@ pool:
   vmImage: vs2017-win2016
 
 steps:
-- powershell: .\build.ps1 -target BuildServer
+- powershell: .\build.ps1 -target BuildServer -Verbosity Diagnostic
   displayName: Build  
   env:
     NETLIFY_TOKEN: $(NETLIFY_TOKEN)
-    
+
 - task: PublishBuildArtifacts@1
   displayName: Publish Website Artifacts
   inputs:
