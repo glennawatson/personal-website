@@ -1,0 +1,8 @@
+#recipe Blog
+
+Settings[Keys.Host] = "glennwatson.net";
+Settings[Keys.LinksUseHttps] = true;
+Settings[BlogKeys.Title] = "Glenn Watson";
+Settings[BlogKeys.Description] = "The personal blog of Glenn Watson";
+Settings[BlogKeys.Intro] = "Hi! I'm a .NET and open source enthusiast.";
+
