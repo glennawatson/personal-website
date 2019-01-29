@@ -1,6 +1,9 @@
 #tool "nuget:?package=Wyam&version=2.1.3"
 #addin "nuget:?package=Cake.Wyam&version=2.1.3"
 #addin "nuget:?package=Cake.Npm&version=0.16.0"
+#addin "nuget:?package=NetlifySharp&version=0.1.0"
+
+using NetlifySharp;
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -91,10 +94,8 @@ Task("Netlify")
 
         // Install the Netlify CLI locally and then run the deploy command
         Information("Deploying output to Netlify");
-        NpmInstall("netlify-cli");
-        StartProcess(
-            MakeAbsolute(File("./node_modules/.bin/netlify.cmd")), 
-            "deploy -p output -s glennawatson.netlify.com -t " + netlifyToken);
+        var client = new NetlifyClient(netlifyToken);
+        client.UpdateSite($"daveaglick.netlify.com", MakeAbsolute(Directory("./output")).FullPath).SendAsync().Wait();
     });
     
 //////////////////////////////////////////////////////////////////////
