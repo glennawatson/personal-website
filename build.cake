@@ -13,7 +13,7 @@ var target = Argument("target", "Default");
 //////////////////////////////////////////////////////////////////////
 
 // Define directories.
-var outputPath          = MakeAbsolute(Directory("./output"));
+var outputPath = MakeAbsolute(Directory("./output"));
 
 
 //////////////////////////////////////////////////////////////////////
