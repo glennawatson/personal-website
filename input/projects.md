@@ -38,7 +38,7 @@ A server that will allow normal git traffic to go to a remote server, but any LF
 
 ---
 
-## GitSquash for Visaul Studio
+## GitSquash for Visual Studio
 
 * [Source Code (GlennAWatson/ReactiveGit)](https://github.com/glennawatson/GitSquash-VIsualStudio)
 
