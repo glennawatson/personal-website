@@ -2,8 +2,6 @@ Title: How to do cross platform compilation with MsBuild.Sdk.Extras and Xamarin.
 Published: 29/1/2019
 Tags:
 - Xamarin
-- Azure
-- DevOps
 - MsBuild.Sdk.Extras
 ---
 
@@ -96,17 +94,16 @@ For example a common structure folder might be:
 |    - more-platform-common-code
 ```
 
-We take advantage of the fact that .csproj files are parsed in order. Firstly we add a ItemGroup which will exclude all files in the platform folder from being compiled (we will add our platforms back later):
+We take advantage of the fact that .csproj files are parsed in order. Firstly we add a ItemGroup which will exclude all files in the platform folder from being compiled (we will add our platforms back later). We use glob pattern matching to exclude all files in the Platforms folder, subfolders.
 
 ```xml
-  <ItemGroup>
+<ItemGroup>
     <Compile Remove="Platforms\**\*.*" />
     <EmbeddedResource Remove="Platforms\**\*.*" />
 
     <!-- Workaround so the files appear in VS -->
     <None Include="Platforms\**\*.*" />
-    <None Include="Colors\**\*.*" />
-  </ItemGroup>
+</ItemGroup>
 ```
 
 Now since MsBuild sets the `TargetFramework` property for each platform it compiles, we can take advantage of this and create a item group with a condition that the `TargetFramework` starts with the prefix. We use `StartsWith` to allow it easier to migrate to new versions of the platforms in the future.
@@ -134,6 +131,57 @@ Some platforms are a little bit trickier like UWP where we want to also include 
 ```
 
 The `DependentUpon` flag uses the `%(FileName)` item which extracts the file name without the extension. So it indicates those files are dependent on their .xaml counterpart.
+
+## Putting it all together
+
+The completed csproj file might look like:
+
+```xml
+<Project Sdk="MSBuild.Sdk.Extras">
+    <PropertyGroup>
+        <TargetFrameworks>Xamarin.iOS10;Xamarin.Mac20;tizen40;netstandard2.0</TargetFrameworks>
+        <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461;uap10.0.16299</TargetFrameworks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Remove="Platforms\**\*.*" />
+        <EmbeddedResource Remove="Platforms\**\*.*" />
+
+        <!-- Workaround so the files appear in VS -->
+        <None Include="Platforms\**\*.*" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS`) ">
+        <Compile Include="Platforms\apple-common\**\*.cs" />
+        <Compile Include="Platforms\ios\**\*.cs" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.Mac`) ">
+        <Compile Include="Platforms\apple-common\**\*.cs" />
+        <Compile Include="Platforms\mac\**\*.cs" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('tizen`) ">
+        <Compile Include="Platforms\tizen\**\*.cs" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('uap')) ">
+        <Compile Include="Platforms\uwp\**\*.cs" />
+
+        <Page Include="Platforms\uwp\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+        <None Update="**\*.xaml.cs" DependentUpon="%(Filename)" />
+        <Compile Update="**\*.xaml.cs" DependentUpon="%(Filename)" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
+        <Compile Include="Platforms\netstandard\**\*.cs" />
+    <ItemGroup>
+
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">
+        <Compile Include="Platforms\net4\**\*.cs" />
+    <ItemGroup>
+</Project>
+```
 
 ## Overview
 
