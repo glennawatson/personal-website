@@ -5,17 +5,17 @@ Tags:
 - MsBuild.Sdk.Extras
 ---
 
-Back in August, 2018 I took over the day to day management of the ReactiveUI project. ReactiveUI is a cross platform functional style application with support for the Reactive Extensions and DotNet. We support a lot of different platforms which adds complexity when it comes to building and testing our product.
+Back in August 2018, I took over the day to day management of the ReactiveUI project. ReactiveUI is a cross-platform functional style application with support for the Reactive Extensions and DotNet. We support a lot of different platforms which adds complexity when it comes to building and testing our product.
 
-I have learned a lot over that time. In particular we have made a lot of focus on making our CI and DevOps experience much easier for the users to contribute to our project.
+I have learned a lot over that time. In particular, we have made a lot of focus on making our CI and DevOps experience much easier for the users to contribute to our project.
 
 I want to share with you our approach on how we handled supporting six very active repositories that all have to support .Net Standard, .Net Core and Xamarin as targets.
 
 ## Handling the TargetFramework's inside your csproj files
 
-Overall, we support numerous Xamarin and .Net targets including .Net Core, iOS, Android, Tizen, TVOS, WPF and Winforms. We wanted to keep the new .csproj format due to it's numerous advantages but a lot of these `TargetFramework` aren't supported out of the box by the standard MSBuild SDK.
+Overall, we support numerous Xamarin and .Net targets including .Net Core, iOS, Android, Tizen, TVOS, WPF and Winforms. We wanted to keep the new .csproj format due to its numerous advantages but a lot of these `TargetFramework` are not supported out of the box by the standard MSBuild SDK.
 
-To assist with this Oren Novotny [MSBuild.Sdk.Extras](https://github.com/onovotny/MSBuildSdkExtras) comes to the rescue. It is a plugin based on the standard MSBuild SDK and expands the support with additional `TargetFramework`.
+To assist with this Oren Novotny's framework [MSBuild.Sdk.Extras](https://github.com/onovotny/MSBuildSdkExtras) comes to the rescue. It is a plugin based on the standard MSBuild SDK and expands the support with additional `TargetFramework`.
 
 To get started at the location of your .sln file add a file called `global.json`. This JSON file is used to determine the version of MSBuild.Sdk.Extras NuGet to use throughout your projects in the same sub-folders as the file. Place the following contents inside the file:
 
@@ -27,7 +27,7 @@ To get started at the location of your .sln file add a file called `global.json`
 }
 ```
 
-Next on top of each of your .csproj replace (making sure they are the new Visual Studio 2017 csproj format):
+Next, on top of each of your .csproj replace (making sure they are the new Visual Studio 2017 .csproj format):
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -39,7 +39,7 @@ with
 <Project Sdk="MSBuild.Sdk.Extras">
 ```
 
-If you aren't targetting .NET Core 3.0 preview, For WPF and Winforms you need to include either `ExtrasEnableWpfProjectSetup` or `ExtrasEnableWinFormsProjectSetup` as a entry with a value of `true` in your csproj's main PropertyGroup. These flags will also make MSBuild.Sdk.Extras include many common references so you don't need to include references to `PresentationFramework` for example for WPF.
+If you aren't targetting .NET Core 3.0 preview, For WPF and Winforms you need to include either `ExtrasEnableWpfProjectSetup` or `ExtrasEnableWinFormsProjectSetup` as an entry with a value of `true` in your .csproj's main PropertyGroup. These flags will also make MSBuild.Sdk.Extras include many common references so you don't need to include references to `PresentationFramework` for example for WPF.
 
 ```xml
   <PropertyGroup>  
@@ -56,9 +56,9 @@ Most of the Xamarin projects will require MsBuild to compile rather than using `
 
 ## Handling compiling on non-windows platforms with .NET framework TargetFramework
 
-In our projects we target of the .NET Framework and UWP `TargetFramework`. We want to do CI testing against Widows and Mac (the two platforms that support Xamarin targets). We had to find a way to not include those when not compiling on Windows.
+In our projects, we target the .NET Framework and UWP `TargetFramework`. We want to do CI testing against Widows and Mac (the two platforms that support Xamarin targets). We had to find a way to not include those when not compiling on Windows.
 
-The best way we found for allow building on Mac is to use a condition inside your `TargetFrameworks` entry that indicates to only include these items if the current build OS is Windows.
+The best way we found for building on Mac is to use a condition inside your `TargetFrameworks` entry that indicates to only include these items if the current build OS is Windows.
 
 ```xml
 <Project Sdk="MSBuild.Sdk.Extras">
@@ -69,7 +69,7 @@ The best way we found for allow building on Mac is to use a condition inside you
 </Project>
 ```
 
-We found with this approach on Visual Studio for Mac only uses the first TargetFramework found in the csproj and ignores the other. We found Rider or using MsBuild worked better.
+We found with this approach on Visual Studio for Mac only uses the first TargetFramework found in the csproj and ignores the other. We found Rider or using MSBuild worked better.
 
 Also if you need to know if you're compiling on Mac/Linux then this [article](https://github.com/Microsoft/msbuild/issues/539) will include information.
 
@@ -94,7 +94,7 @@ For example a common structure folder might be:
 |    - more-platform-common-code
 ```
 
-We take advantage of the fact that .csproj files are parsed in order. Firstly we add a ItemGroup which will exclude all files in the platform folder from being compiled (we will add our platforms back later). We use glob pattern matching to exclude all files in the Platforms folder, subfolders.
+We take advantage of the fact that .csproj files are parsed in order. Firstly we add an ItemGroup which will exclude all files in the platform folder from being compiled (we will add our platforms back later). We use glob pattern matching to exclude all files in the Platforms folder, subfolders.
 
 ```xml
 <ItemGroup>
@@ -106,7 +106,7 @@ We take advantage of the fact that .csproj files are parsed in order. Firstly we
 </ItemGroup>
 ```
 
-Now since MsBuild sets the `TargetFramework` property for each platform it compiles, we can take advantage of this and create a item group with a condition that the `TargetFramework` starts with the prefix. We use `StartsWith` to allow it easier to migrate to new versions of the platforms in the future.
+Now since MSBuild sets the `TargetFramework` property for each platform it compiles, we can take advantage of this and create an item group with a condition that the `TargetFramework` starts with the prefix. We use `StartsWith` to allow it easier to migrate to new versions of the platforms in the future.
 
 ```xml
 <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
