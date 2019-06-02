@@ -1,6 +1,6 @@
-#tool "nuget:?package=Wyam&version=2.1.3"
-#addin "nuget:?package=Cake.Wyam&version=2.1.3"
-#addin "nuget:?package=Cake.Npm&version=0.16.0"
+#tool "nuget:?package=Wyam&version=2.2.4"
+#addin "nuget:?package=Cake.Wyam&version=2.2.4"
+#addin "nuget:?package=Cake.Npm&version=0.17.0"
 #addin "nuget:?package=NetlifySharp&version=0.1.0"
 
 using NetlifySharp;
