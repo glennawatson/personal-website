@@ -31,7 +31,7 @@ In this guide all the instructions are for windows but they can be adapted for o
 
 ## Yubikey Setup
 
-First step is to get a X%09 certificate from a authorised provider such as DigiCert, making sure your CSR request contains your GitHub email. Follow their instructions on how install and use the key.
+First step is to get a X509 certificate from a authorised provider such as DigiCert, making sure your CSR request contains your GitHub email. Follow their instructions on how install and use the key.
 
 On windows you can use a [Yubikey Mini Smart Driver](https://support.yubico.com/support/solutions/articles/15000006456-yubikey-smart-card-deployment-guide#YubiKey_Minidriver_Installationies8o) but I found the YubiKey manager approach detailed below easier.
 
