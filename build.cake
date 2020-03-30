@@ -84,7 +84,7 @@ Task("Debug")
     });
 
 Task("Netlify")
-    .Does(() =>
+    .Does(async () =>
     {
         var netlifyToken = EnvironmentVariable("NETLIFY_TOKEN");
         if(string.IsNullOrEmpty(netlifyToken))
@@ -95,7 +95,7 @@ Task("Netlify")
         // Install the Netlify CLI locally and then run the deploy command
         Information("Deploying output to Netlify");
         var client = new NetlifyClient(netlifyToken);
-        client.UpdateSite($"glennawatson.netlify.com", MakeAbsolute(Directory("./output")).FullPath).SendAsync().Wait();
+        var website = await client.UpdateSiteAsync(MakeAbsolute(Directory("./output")).FullPath, "glennawatson.netlify.com");
     });
     
 //////////////////////////////////////////////////////////////////////
