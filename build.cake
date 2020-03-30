@@ -106,8 +106,7 @@ Task("Default")
     .IsDependentOn("Preview");
     
 Task("BuildServer")
-    .IsDependentOn("Build")
-    .IsDependentOn("Netlify");
+    .IsDependentOn("Build");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
