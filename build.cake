@@ -1,7 +1,7 @@
 #tool "nuget:?package=Wyam&version=2.2.9"
 #addin "nuget:?package=Cake.Wyam&version=2.2.9"
 #addin "nuget:?package=Cake.Npm&version=0.17.0"
-#addin "nuget:?package=NetlifySharp&version=1.1.0"
+#addin "nuget:?package=NetlifySharp&version=0.1.0"
 
 using NetlifySharp;
 
@@ -84,7 +84,7 @@ Task("Debug")
     });
 
 Task("Netlify")
-    .Does(async () =>
+    .Does(() =>
     {
         var netlifyToken = EnvironmentVariable("NETLIFY_TOKEN");
         if(string.IsNullOrEmpty(netlifyToken))
@@ -95,7 +95,7 @@ Task("Netlify")
         // Install the Netlify CLI locally and then run the deploy command
         Information("Deploying output to Netlify");
         var client = new NetlifyClient(netlifyToken);
-        var website = await client.UpdateSiteAsync(MakeAbsolute(Directory("./output")).FullPath, "glennawatson.netlify.com");
+        client.UpdateSite($"glennawatson.netlify.com", MakeAbsolute(Directory("./output")).FullPath).SendAsync().Wait();
     });
     
 //////////////////////////////////////////////////////////////////////
