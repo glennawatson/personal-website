@@ -5,10 +5,10 @@ pr:
 - master
 
 pool:
-  vmImage: vs2017-win2016
+  vmImage: windows-latest
 
 steps:
-- powershell: .\build.ps1 -target BuildServer -Verbosity Diagnostic
+- powershell: .\build.ps1 --target=BuildServer
   displayName: Build  
   env:
     NETLIFY_TOKEN: $(NETLIFY_TOKEN)
