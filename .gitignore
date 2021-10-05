@@ -362,3 +362,6 @@ output/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# cache statiq
+/cache
